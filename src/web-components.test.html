@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test — Web Components</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mocha@10/mocha.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/mocha@10/mocha.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chai@4/chai.js"></script>
+    <script>
+      mocha.setup('bdd');
+    </script>
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <script type="importmap">
+      { "imports": { "uplot": "https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.esm.js" } }
+    </script>
+    <script type="module">
+      import '../dist/web-components.esm.js';
+      import { setTheme, CHART_RECREATED_EVENT } from '../dist/carbon-uplot.esm.js';
+      import {
+        timestamps,
+        cpuSeriesA,
+        cpuSeriesB,
+        scatterCpu,
+        scatterLatency,
+        heatmapData,
+        HEATMAP_BUCKET_LABELS,
+        BAR_GAUGE_CPU,
+      } from '../demo/demo-data.js';
+
+      const { assert } = chai;
+
+      const SERIES_ONE = [{ label: 'CPU' }];
+      const SERIES_TWO = [{ label: 'A' }, { label: 'B' }];
+
+      function mountChart(series = SERIES_ONE, data = [timestamps, cpuSeriesA]) {
+        const el = document.createElement('cu-line-chart');
+        el.style.height = '200px';
+        document.body.appendChild(el);
+        el.series = series;
+        el.data = data;
+        return el;
+      }
+
+      describe('<cu-line-chart />', () => {
+        it('is registered as a custom element', () => {
+          assert.ok(customElements.get('cu-line-chart'));
+        });
+
+        it('renders a canvas when connected with data and series', () => {
+          const el = mountChart();
+          assert.ok(el.querySelector('canvas'));
+          el.nextElementSibling?.remove();
+          el.remove();
+        });
+
+        it('appends a legend with one button per series', () => {
+          const el = mountChart(SERIES_TWO, [timestamps, cpuSeriesA, cpuSeriesB]);
+          const legend = el.nextElementSibling;
+          assert.ok(legend);
+          assert.strictEqual(legend.querySelectorAll('button').length, 2);
+          legend.remove();
+          el.remove();
+        });
+
+        it('removes canvas on disconnect', () => {
+          const el = mountChart();
+          el.remove();
+          assert.isNull(el.querySelector('canvas'));
+        });
+
+        it('dispatches CHART_RECREATED_EVENT on theme change', () => {
+          const el = mountChart();
+          let receivedEvent = null;
+          el.addEventListener(
+            CHART_RECREATED_EVENT,
+            (event) => {
+              receivedEvent = event;
+            },
+            { once: true },
+          );
+          setTheme('g90');
+          assert.ok(receivedEvent?.detail.chart);
+          receivedEvent.detail.chart.destroy();
+          el.nextElementSibling?.remove();
+          el.remove();
+          setTheme('white');
+        });
+
+        it('reflects legend attribute as property', () => {
+          const el = mountChart();
+          el.setAttribute('legend', 'top');
+          assert.strictEqual(el.legend, 'top');
+          el.nextElementSibling?.remove();
+          el.remove();
+        });
+      });
+
+      describe('<cu-scatter-chart />', () => {
+        it('is registered as a custom element', () => {
+          assert.ok(customElements.get('cu-scatter-chart'));
+        });
+
+        it('renders a canvas when connected with data and series', () => {
+          const el = document.createElement('cu-scatter-chart');
+          el.style.height = '200px';
+          document.body.appendChild(el);
+          el.series = [{ label: 'prod-vsi-01' }];
+          el.data = [scatterCpu, scatterLatency];
+          assert.ok(el.querySelector('canvas'));
+          el.nextElementSibling?.remove();
+          el.remove();
+        });
+
+        it('reflects x-label and y-label attributes as properties', () => {
+          const el = document.createElement('cu-scatter-chart');
+          el.setAttribute('x-label', 'CPU utilization (%)');
+          el.setAttribute('y-label', 'Response time (ms)');
+          el.style.height = '200px';
+          document.body.appendChild(el);
+          el.series = [{ label: 'prod-vsi-01' }];
+          el.data = [scatterCpu, scatterLatency];
+          assert.strictEqual(el.xLabel, 'CPU utilization (%)');
+          assert.strictEqual(el.yLabel, 'Response time (ms)');
+          el.nextElementSibling?.remove();
+          el.remove();
+        });
+      });
+
+      describe('<cu-gauge />', () => {
+        it('is registered as a custom element', () => {
+          assert.ok(customElements.get('cu-gauge'));
+        });
+
+        it('renders an SVG when value is set', () => {
+          const el = document.createElement('cu-gauge');
+          document.body.appendChild(el);
+          el.ticks = false;
+          el.value = 75;
+          assert.ok(el.querySelector('svg'));
+          assert.strictEqual(el.querySelector('text').textContent, '75');
+          el.remove();
+        });
+
+        it('updates the value label via setValue', () => {
+          const el = document.createElement('cu-gauge');
+          document.body.appendChild(el);
+          el.ticks = false;
+          el.value = 50;
+          el.setValue({ value: 80 });
+          assert.strictEqual(el.querySelector('text').textContent, '80');
+          el.remove();
+        });
+
+        it('removes SVG on disconnect', () => {
+          const el = document.createElement('cu-gauge');
+          document.body.appendChild(el);
+          el.value = 50;
+          el.remove();
+          assert.isNull(el.querySelector('svg'));
+        });
+
+        it('renders label text when label attribute is set', () => {
+          const el = document.createElement('cu-gauge');
+          el.setAttribute('label', 'CPU utilization');
+          document.body.appendChild(el);
+          el.ticks = false;
+          el.value = 42;
+          assert.include(el.textContent, 'CPU utilization');
+          el.remove();
+        });
+
+        it('reflects color attribute as property', () => {
+          const el = document.createElement('cu-gauge');
+          el.setAttribute('color', '#be95ff');
+          document.body.appendChild(el);
+          el.value = 50;
+          assert.strictEqual(el.color, '#be95ff');
+          el.remove();
+        });
+      });
+
+      describe('<cu-stat />', () => {
+        it('is registered as a custom element', () => {
+          assert.ok(customElements.get('cu-stat'));
+        });
+
+        it('renders the initial value when value is set', () => {
+          const el = document.createElement('cu-stat');
+          document.body.appendChild(el);
+          el.value = 42;
+          assert.include(el.textContent, '42');
+          el.remove();
+        });
+
+        it('renders a canvas for the sparkline when data is set', () => {
+          const el = document.createElement('cu-stat');
+          el.style.height = '140px';
+          document.body.appendChild(el);
+          el.data = [timestamps, cpuSeriesA];
+          el.value = 50;
+          assert.ok(el.querySelector('canvas'));
+          el.remove();
+        });
+
+        it('updates value without remounting the canvas', () => {
+          const el = document.createElement('cu-stat');
+          el.style.height = '140px';
+          document.body.appendChild(el);
+          el.data = [timestamps, cpuSeriesA];
+          el.value = 42;
+          const canvas = el.querySelector('canvas');
+          el.value = 88;
+          assert.include(el.textContent, '88');
+          assert.strictEqual(el.querySelector('canvas'), canvas);
+          el.remove();
+        });
+
+        it('updates value via setValue method', () => {
+          const el = document.createElement('cu-stat');
+          document.body.appendChild(el);
+          el.value = 50;
+          el.setValue({ value: 80 });
+          assert.include(el.textContent, '80');
+          el.remove();
+        });
+
+        it('does not render a canvas when sparkline is false', () => {
+          const el = document.createElement('cu-stat');
+          document.body.appendChild(el);
+          el.sparkline = false;
+          el.value = 99;
+          assert.isNull(el.querySelector('canvas'));
+          el.remove();
+        });
+
+        it('removes content on disconnect', () => {
+          const el = document.createElement('cu-stat');
+          el.style.height = '140px';
+          document.body.appendChild(el);
+          el.data = [timestamps, cpuSeriesA];
+          el.value = 50;
+          assert.ok(el.querySelector('canvas'));
+          el.remove();
+          assert.isNull(el.querySelector('canvas'));
+        });
+
+        it('renders label text when label attribute is set', () => {
+          const el = document.createElement('cu-stat');
+          el.setAttribute('label', 'Network in');
+          document.body.appendChild(el);
+          el.value = 50;
+          assert.include(el.textContent, 'Network in');
+          el.remove();
+        });
+
+        it('applies a smaller font when size attribute is set to sm', () => {
+          const elSm = document.createElement('cu-stat');
+          const elMd = document.createElement('cu-stat');
+          elSm.style.height = elMd.style.height = '140px';
+          elSm.setAttribute('size', 'sm');
+          document.body.appendChild(elSm);
+          document.body.appendChild(elMd);
+          elSm.value = elMd.value = 42;
+          const smValueEl = Array.from(elSm.querySelectorAll('[style*="font-size"]')).find(
+            (node) => node.textContent.trim() === '42',
+          );
+          const mdValueEl = Array.from(elMd.querySelectorAll('[style*="font-size"]')).find(
+            (node) => node.textContent.trim() === '42',
+          );
+          assert.isBelow(parseFloat(smValueEl.style.fontSize), parseFloat(mdValueEl.style.fontSize));
+          elSm.remove();
+          elMd.remove();
+        });
+
+        it('applies text-align center when align attribute is set', () => {
+          const el = document.createElement('cu-stat');
+          el.setAttribute('align', 'center');
+          document.body.appendChild(el);
+          el.value = 42;
+          const valueEl = Array.from(el.querySelectorAll('[style*="font-size"]')).find(
+            (node) => node.textContent.trim() === '42',
+          );
+          assert.strictEqual(valueEl.style.textAlign, 'center');
+          el.remove();
+        });
+
+        it('applies vertical centering when vertical-align attribute is set', () => {
+          const el = document.createElement('cu-stat');
+          el.setAttribute('vertical-align', 'center');
+          el.style.height = '140px';
+          document.body.appendChild(el);
+          el.sparkline = false;
+          el.value = 42;
+          const centered = Array.from(el.querySelectorAll('*')).find((node) => node.style.justifyContent === 'center');
+          assert.ok(centered);
+          el.remove();
+        });
+
+        it('vertical-align attribute and verticalAlign property produce the same result', () => {
+          const elAttr = document.createElement('cu-stat');
+          const elProp = document.createElement('cu-stat');
+          elAttr.style.height = elProp.style.height = '140px';
+          elAttr.setAttribute('vertical-align', 'center');
+          elProp.verticalAlign = 'center';
+          document.body.appendChild(elAttr);
+          document.body.appendChild(elProp);
+          elAttr.sparkline = elProp.sparkline = false;
+          elAttr.value = elProp.value = 42;
+          const attrCentered = Array.from(elAttr.querySelectorAll('*')).find(
+            (node) => node.style.justifyContent === 'center',
+          );
+          const propCentered = Array.from(elProp.querySelectorAll('*')).find(
+            (node) => node.style.justifyContent === 'center',
+          );
+          assert.ok(attrCentered);
+          assert.ok(propCentered);
+          elAttr.remove();
+          elProp.remove();
+        });
+      });
+
+      describe('<cu-heatmap />', () => {
+        it('is registered as a custom element', () => {
+          assert.ok(customElements.get('cu-heatmap'));
+        });
+
+        it('renders a canvas when connected with data', () => {
+          const el = document.createElement('cu-heatmap');
+          el.style.height = '220px';
+          document.body.appendChild(el);
+          el.data = heatmapData;
+          assert.ok(el.querySelector('canvas'));
+          el.remove();
+        });
+
+        it('renders with bucket labels', () => {
+          const el = document.createElement('cu-heatmap');
+          el.style.height = '220px';
+          document.body.appendChild(el);
+          el.bucketLabels = HEATMAP_BUCKET_LABELS;
+          el.data = heatmapData;
+          assert.ok(el.querySelector('canvas'));
+          el.remove();
+        });
+
+        it('reflects color attribute as property', () => {
+          const el = document.createElement('cu-heatmap');
+          el.setAttribute('color', '#3ddbd9');
+          el.style.height = '220px';
+          document.body.appendChild(el);
+          el.data = heatmapData;
+          assert.strictEqual(el.color, '#3ddbd9');
+          el.remove();
+        });
+
+        it('removes canvas on disconnect', () => {
+          const el = document.createElement('cu-heatmap');
+          el.style.height = '220px';
+          document.body.appendChild(el);
+          el.data = heatmapData;
+          assert.ok(el.querySelector('canvas'));
+          el.remove();
+          assert.isNull(el.querySelector('canvas'));
+        });
+      });
+
+      describe('<cu-bar-gauge />', () => {
+        it('is registered as a custom element', () => {
+          assert.ok(customElements.get('cu-bar-gauge'));
+        });
+
+        it('renders label text when series is set', () => {
+          const el = document.createElement('cu-bar-gauge');
+          document.body.appendChild(el);
+          el.series = BAR_GAUGE_CPU;
+          assert.include(el.textContent, 'prod-db-primary');
+          el.remove();
+        });
+
+        it('reflects color attribute as property', () => {
+          const el = document.createElement('cu-bar-gauge');
+          el.setAttribute('color', '#3ddbd9');
+          document.body.appendChild(el);
+          el.series = BAR_GAUGE_CPU;
+          assert.strictEqual(el.color, '#3ddbd9');
+          el.remove();
+        });
+
+        it('removes content on disconnect', () => {
+          const el = document.createElement('cu-bar-gauge');
+          document.body.appendChild(el);
+          el.series = BAR_GAUGE_CPU;
+          assert.include(el.textContent, 'prod-db-primary');
+          el.remove();
+          assert.notInclude(el.textContent, 'prod-db-primary');
+        });
+      });
+
+      mocha.run();
+    </script>
+  </body>
+</html>

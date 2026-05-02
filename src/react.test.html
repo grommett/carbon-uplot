@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test — React</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mocha@10/mocha.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/mocha@10/mocha.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chai@4/chai.js"></script>
+    <script>mocha.setup('bdd')</script>
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <script type="importmap">
+      {
+        "imports": {
+          "uplot": "https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.esm.js",
+          "react": "https://esm.sh/react@18",
+          "react-dom/client": "https://esm.sh/react-dom@18/client"
+        }
+      }
+    </script>
+    <script type="module">
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+      import { LineChart, Gauge, Stat, Heatmap, BarGauge } from '../dist/react.esm.js';
+      import { setTheme, CHART_RECREATED_EVENT } from '../dist/carbon-uplot.esm.js';
+      import { timestamps, cpuSeriesA, cpuSeriesB, heatmapData, HEATMAP_BUCKET_LABELS, BAR_GAUGE_CPU } from '../demo/demo-data.js';
+
+      const { assert } = chai;
+
+      const SERIES_ONE = [{ label: 'CPU' }];
+      const SERIES_TWO = [{ label: 'A' }, { label: 'B' }];
+      const RENDER_DELAY = 100;
+
+      function render(wrapper, props) {
+        const root = createRoot(wrapper);
+        root.render(createElement(LineChart, props));
+        return root;
+      }
+
+      function wait(ms = RENDER_DELAY) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      describe('LineChart', () => {
+        let wrapper;
+        let root;
+
+        beforeEach(() => {
+          wrapper = document.createElement('div');
+          wrapper.style.height = '200px';
+          document.body.appendChild(wrapper);
+        });
+
+        afterEach(() => {
+          root?.unmount();
+          wrapper.nextElementSibling?.remove();
+          wrapper.remove();
+        });
+
+        it('renders a canvas inside the container', async () => {
+          root = render(wrapper, { data: [timestamps, cpuSeriesA], yRange: [0, 100], series: SERIES_ONE });
+          await wait();
+          assert.ok(wrapper.querySelector('canvas'));
+        });
+
+        it('appends a legend with one button per series', async () => {
+          root = render(wrapper, { data: [timestamps, cpuSeriesA, cpuSeriesB], yRange: [0, 100], series: SERIES_TWO });
+          await wait();
+          const chartEl = wrapper.firstElementChild;
+          const legend = chartEl.nextElementSibling;
+          assert.ok(legend);
+          assert.strictEqual(legend.querySelectorAll('button').length, 2);
+        });
+
+        it('removes canvas and legend on unmount', async () => {
+          root = render(wrapper, { data: [timestamps, cpuSeriesA], yRange: [0, 100], series: SERIES_ONE });
+          await wait();
+          root.unmount();
+          root = null;
+          await wait();
+          assert.isNull(wrapper.querySelector('canvas'));
+        });
+
+        it('dispatches CHART_RECREATED_EVENT on theme change', async () => {
+          root = render(wrapper, { data: [timestamps, cpuSeriesA], yRange: [0, 100], series: SERIES_ONE });
+          await wait();
+          const chartEl = wrapper.firstElementChild;
+          let receivedEvent = null;
+          chartEl.addEventListener(CHART_RECREATED_EVENT, (event) => { receivedEvent = event; }, { once: true });
+          setTheme('g90');
+          assert.ok(receivedEvent?.detail.chart);
+          receivedEvent.detail.chart.destroy();
+          setTheme('white');
+        });
+      });
+
+      describe('Gauge', () => {
+        let wrapper;
+        let root;
+
+        beforeEach(() => {
+          wrapper = document.createElement('div');
+          document.body.appendChild(wrapper);
+        });
+
+        afterEach(() => {
+          root?.unmount();
+          wrapper.remove();
+        });
+
+        it('renders an SVG into the container', async () => {
+          root = createRoot(wrapper);
+          root.render(createElement(Gauge, { value: 50 }));
+          await wait();
+          assert.ok(wrapper.querySelector('svg'));
+        });
+
+        it('renders the initial value in the label', async () => {
+          root = createRoot(wrapper);
+          root.render(createElement(Gauge, { value: 75, ticks: false }));
+          await wait();
+          assert.strictEqual(wrapper.querySelector('text').textContent, '75');
+        });
+
+        it('updates value label when value prop changes', async () => {
+          root = createRoot(wrapper);
+          root.render(createElement(Gauge, { value: 50, ticks: false }));
+          await wait();
+          root.render(createElement(Gauge, { value: 80, ticks: false }));
+          await wait();
+          assert.strictEqual(wrapper.querySelector('text').textContent, '80');
+        });
+
+        it('removes SVG on unmount', async () => {
+          root = createRoot(wrapper);
+          root.render(createElement(Gauge, { value: 50 }));
+          await wait();
+          root.unmount();
+          root = null;
+          await wait();
+          assert.isNull(wrapper.querySelector('svg'));
+        });
+      });
+
+      describe('Stat', () => {
+        let wrapper;
+        let root;
+
+        beforeEach(() => {
+          wrapper = document.createElement('div');
+          wrapper.style.height = '140px';
+          document.body.appendChild(wrapper);
+        });
+
+        afterEach(() => {
+          root?.unmount();
+          wrapper.remove();
+        });
+
+        it('renders the initial value', async () => {
+          root = createRoot(wrapper);
+          root.render(createElement(Stat, { value: 42 }));
+          await wait();
+          assert.include(wrapper.textContent, '42');
+        });
+
+        it('renders a canvas for the sparkline when data is provided', async () => {
+          root = createRoot(wrapper);
+          root.render(createElement(Stat, { value: 50, data: [timestamps, cpuSeriesA] }));
+          await wait();
+          assert.ok(wrapper.querySelector('canvas'));
+        });
+
+        it('updates value without remounting the canvas', async () => {
+          const data = [timestamps, cpuSeriesA];
+          root = createRoot(wrapper);
+          root.render(createElement(Stat, { value: 42, data }));
+          await wait();
+          const canvas = wrapper.querySelector('canvas');
+          root.render(createElement(Stat, { value: 88, data }));
+          await wait();
+          assert.include(wrapper.textContent, '88');
+          assert.strictEqual(wrapper.querySelector('canvas'), canvas);
+        });
+
+        it('does not render a canvas when sparkline is false', async () => {
+          root = createRoot(wrapper);
+          root.render(createElement(Stat, { value: 99, sparkline: false }));
+          await wait();
+          assert.isNull(wrapper.querySelector('canvas'));
+        });
+
+        it('does not render the value when showValue is false', async () => {
+          const data = [timestamps, cpuSeriesA];
+          root = createRoot(wrapper);
+          root.render(createElement(Stat, { value: 50, data, showValue: false }));
+          await wait();
+          assert.ok(wrapper.querySelector('canvas'));
+          assert.notInclude(wrapper.textContent, '50');
+        });
+
+        it('removes content on unmount', async () => {
+          const data = [timestamps, cpuSeriesA];
+          root = createRoot(wrapper);
+          root.render(createElement(Stat, { value: 50, data }));
+          await wait();
+          assert.ok(wrapper.querySelector('canvas'));
+          root.unmount();
+          root = null;
+          await wait();
+          assert.isNull(wrapper.querySelector('canvas'));
+        });
+      });
+
+      describe('Heatmap', () => {
+        let wrapper;
+        let root;
+
+        beforeEach(() => {
+          wrapper = document.createElement('div');
+          wrapper.style.height = '220px';
+          document.body.appendChild(wrapper);
+        });
+
+        afterEach(() => {
+          root?.unmount();
+          wrapper.remove();
+        });
+
+        it('renders a canvas when data is provided', async () => {
+          root = createRoot(wrapper);
+          root.render(createElement(Heatmap, { data: heatmapData }));
+          await wait();
+          assert.ok(wrapper.querySelector('canvas'));
+        });
+
+        it('renders with bucket labels', async () => {
+          root = createRoot(wrapper);
+          root.render(createElement(Heatmap, { data: heatmapData, bucketLabels: HEATMAP_BUCKET_LABELS }));
+          await wait();
+          assert.ok(wrapper.querySelector('canvas'));
+        });
+
+        it('removes canvas on unmount', async () => {
+          root = createRoot(wrapper);
+          root.render(createElement(Heatmap, { data: heatmapData }));
+          await wait();
+          root.unmount();
+          root = null;
+          await wait();
+          assert.isNull(wrapper.querySelector('canvas'));
+        });
+      });
+
+      describe('BarGauge', () => {
+        let wrapper;
+        let root;
+
+        beforeEach(() => {
+          wrapper = document.createElement('div');
+          document.body.appendChild(wrapper);
+        });
+
+        afterEach(() => {
+          root?.unmount();
+          wrapper.remove();
+        });
+
+        it('renders label text when series is provided', async () => {
+          root = createRoot(wrapper);
+          root.render(createElement(BarGauge, { series: BAR_GAUGE_CPU }));
+          await wait();
+          assert.include(wrapper.textContent, 'prod-db-primary');
+        });
+
+        it('removes content on unmount', async () => {
+          root = createRoot(wrapper);
+          root.render(createElement(BarGauge, { series: BAR_GAUGE_CPU }));
+          await wait();
+          assert.include(wrapper.textContent, 'prod-db-primary');
+          root.unmount();
+          root = null;
+          await wait();
+          assert.notInclude(wrapper.textContent, 'prod-db-primary');
+        });
+      });
+
+      mocha.run();
+    </script>
+  </body>
+</html>

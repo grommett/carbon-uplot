@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="/demo/components/cds-uplot-restore-theme.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Carbon µPlot — {{ title }}</title>
+    <link rel="stylesheet" href="/assets/carbon.css" />
+    <link rel="stylesheet" href="/demo/carbon-demo.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.min.css" />
+  </head>
+  <body>
+    {% include "demo-header.html" %}
+    <main>{{ content }}</main>
+    <script type="importmap">
+      {
+        "imports": {
+          "uplot": "https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.esm.js"
+        }
+      }
+    </script>
+    {%- if script %}
+    <script type="module" src="{{ script }}"></script>
+    <script type="module" src="/demo/components/demo-code-tabs.js"></script>
+    {%- endif %}
+  </body>
+</html>

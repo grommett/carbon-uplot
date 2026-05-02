@@ -1,0 +1,183 @@
+---
+layout: demo-chart
+title: Overview
+active: ''
+script: /demo/overview.js
+---
+
+<div class="cu-overview">
+  <section class="overview__lead-2">
+    <div class="cu-overview__lead-text">
+      <h1>Carbon &micro;Plot</h1>
+      <p class="cu-overview__subtitle">
+        Carbon-styled observability charts built on &micro;Plot — for metrics, monitoring, and operational dashboards.
+      </p>
+    </div>
+    <img class="cu-overview__lead-img" src="/demo/imgs/thumb-area.png" alt="Area chart preview" />
+  </section>
+
+  <section class="cu-overview__section">
+    <h2 class="cu-overview__section-title">Built for observability data</h2>
+    <div class="cu-overview__cards">
+      <div class="cds--tile cu-overview__card">
+        <h3 class="cu-overview__card-title">Columnar by default</h3>
+        <p>
+          Most charting libraries use row objects — one object per data point across all series. Prometheus, CloudWatch,
+          and InfluxDB return parallel arrays: one timestamp array, one value array per series. That is &micro;Plot's
+          native format — no reshape, no per-point object allocation, no transformation step.
+        </p>
+      </div>
+
+      <div class="cds--tile cu-overview__card">
+        <h3 class="cu-overview__card-title">Canvas rendering for dense data</h3>
+        <p>
+          &micro;Plot renders on Canvas, not SVG. SVG creates a DOM node for each data point — a chart with 1,000 points
+          across 5 series is 5,000 elements the browser must layout, paint, and manage. Canvas draws pixels directly.
+          Adding data points costs almost nothing extra.
+        </p>
+      </div>
+
+      <div class="cds--tile cu-overview__card">
+        <h3 class="cu-overview__card-title">Carbon tokens, zero extra CSS</h3>
+        <p>
+          carbon-&micro;Plot reads Carbon CSS custom properties directly. If your application already uses Carbon, there
+          is nothing extra to load. All four themes — White, G10, G90, G100 — work without any chart-specific
+          configuration.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="cu-overview__section">
+    <h2 class="cu-overview__section-title">Chart types</h2>
+    <div class="cu-overview__chart-links">
+      <a href="/demo/line.html" class="cds--tile cu-overview__chart-link">
+        <div class="cu-overview__chart-preview" id="cu-preview-line"></div>
+        <span class="cu-overview__chart-link-name">Line</span>
+        <span class="cu-overview__chart-link-desc">Time-series lines, multi-series, custom formatters</span>
+      </a>
+      <a href="/demo/area.html" class="cds--tile cu-overview__chart-link">
+        <div class="cu-overview__chart-preview" id="cu-preview-area"></div>
+        <span class="cu-overview__chart-link-name">Area</span>
+        <span class="cu-overview__chart-link-desc">Stacked and layered area charts with fill</span>
+      </a>
+      <a href="/demo/bar.html" class="cds--tile cu-overview__chart-link">
+        <div class="cu-overview__chart-preview" id="cu-preview-bar"></div>
+        <span class="cu-overview__chart-link-name">Bar</span>
+        <span class="cu-overview__chart-link-desc">Vertical bars, daily and interval data, value labels</span>
+      </a>
+      <a href="/demo/scatter.html" class="cds--tile cu-overview__chart-link">
+        <div class="cu-overview__chart-preview" id="cu-preview-scatter"></div>
+        <span class="cu-overview__chart-link-name">Scatter</span>
+        <span class="cu-overview__chart-link-desc">Correlation plots with axis labels and multi-series</span>
+      </a>
+      <a href="/demo/gauge.html" class="cds--tile cu-overview__chart-link">
+        <div class="cu-overview__chart-preview" id="cu-preview-gauge"></div>
+        <span class="cu-overview__chart-link-name">Gauge</span>
+        <span class="cu-overview__chart-link-desc">Arc gauges with thresholds, live updates, custom ranges</span>
+      </a>
+      <a href="/demo/stat.html" class="cds--tile cu-overview__chart-link">
+        <div class="cu-overview__chart-preview" id="cu-preview-stat"></div>
+        <span class="cu-overview__chart-link-name">Stat</span>
+        <span class="cu-overview__chart-link-desc">Big-number value with sparkline, live updates, custom color</span>
+      </a>
+      <a href="/demo/heatmap.html" class="cds--tile cu-overview__chart-link">
+        <div class="cu-overview__chart-preview" id="cu-preview-heatmap"></div>
+        <span class="cu-overview__chart-link-name">Heatmap</span>
+        <span class="cu-overview__chart-link-desc">Request latency bucketing and density distributions</span>
+      </a>
+      <a href="/demo/bar-gauge.html" class="cds--tile cu-overview__chart-link">
+        <div class="cu-overview__chart-preview" id="cu-preview-bar-gauge"></div>
+        <span class="cu-overview__chart-link-name">Bar Gauge</span>
+        <span class="cu-overview__chart-link-desc">Multi-series horizontal meters with thresholds and inverted mode</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="cu-overview__section">
+    <div class="cu-overview__compare-cols">
+      <div>
+        <h2 class="cu-overview__section-title">Carbon &micro;Plot vs Carbon Charts</h2>
+        <p class="cu-overview__section-lead">
+          <a href="https://charts.carbondesignsystem.com" class="cu-overview__link">@carbon/charts</a>
+          covers 23 chart types built on D3 — from alluvial diagrams to word clouds. carbon-&micro;Plot is the focused
+          alternative for teams that need only observability charts with the smallest possible path to Carbon styling.
+        </p>
+      </div>
+
+      <div role="table" class="cds--structured-list" aria-label="Structured list section">
+      <div role="rowgroup" class="cds--structured-list-thead">
+        <div role="row" class="cds--structured-list-row cds--structured-list-row--header-row">
+          <span class="cds--structured-list-th" role="columnheader" dir="ltr"></span
+          ><span class="cds--structured-list-th" role="columnheader" dir="ltr">carbon-&micro;Plot</span
+          ><span class="cds--structured-list-th" role="columnheader" dir="ltr">@carbon/charts</span>
+        </div>
+      </div>
+      <div class="cds--structured-list-tbody" role="rowgroup">
+        <div role="row" class="cds--structured-list-row cds--structured-list-row--selected">
+          <div class="cds--structured-list-td cds--structured-list-content--nowrap" role="cell" dir="ltr">
+            Carbon CSS
+          </div>
+          <div class="cds--structured-list-td" role="cell" dir="ltr">Reads tokens already in your app</div>
+          <div class="cds--structured-list-td" role="cell" dir="ltr">Full Carbon CSS required</div>
+        </div>
+        <div role="row" class="cds--structured-list-row">
+          <div class="cds--structured-list-td cds--structured-list-content--nowrap" role="cell" dir="ltr">
+            Data format
+          </div>
+          <div class="cds--structured-list-td" role="cell" dir="ltr">Columnar arrays (&micro;Plot native)</div>
+          <div class="cds--structured-list-td" role="cell" dir="ltr">Row objects</div>
+        </div>
+        <div role="row" class="cds--structured-list-row">
+          <div class="cds--structured-list-td cds--structured-list-content--nowrap" role="cell" dir="ltr">
+            Dense time-series
+          </div>
+          <div class="cds--structured-list-td" role="cell" dir="ltr">Canvas &mdash; cost is constant per frame</div>
+          <div class="cds--structured-list-td" role="cell" dir="ltr">SVG DOM — cost grows with point count</div>
+        </div>
+        <div role="row" class="cds--structured-list-row">
+          <div class="cds--structured-list-td cds--structured-list-content--nowrap" role="cell" dir="ltr">
+            Observability chart types
+          </div>
+          <div class="cds--structured-list-td" role="cell" dir="ltr">Line, area, bar, scatter, gauge, stat, heatmap, bar gauge</div>
+          <div class="cds--structured-list-td" role="cell" dir="ltr">Line, area, bar, scatter, gauge, and more</div>
+        </div>
+        <div role="row" class="cds--structured-list-row">
+          <div class="cds--structured-list-td cds--structured-list-content--nowrap" role="cell" dir="ltr">
+            Bundle size
+          </div>
+          <div class="cds--structured-list-td" role="cell" dir="ltr">~65 KB min / ~46 KB gz</div>
+          <div class="cds--structured-list-td" role="cell" dir="ltr">543 KB min / 155 KB gz</div>
+        </div>
+        <div role="row" class="cds--structured-list-row">
+          <div class="cds--structured-list-td cds--structured-list-content--nowrap" role="cell" dir="ltr">
+            General visualization
+          </div>
+          <div class="cds--structured-list-td" role="cell" dir="ltr">&mdash;</div>
+          <div class="cds--structured-list-td" role="cell" dir="ltr">Pie, treemap, sankey, heatmap, and 15 more</div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="cu-overview__when">
+      <div class="cds--tile cu-overview__when-tile">
+        <h3 class="cu-overview__when-title">Use carbon-&micro;Plot when you are</h3>
+        <ul class="cu-overview__list">
+          <li>Building a metrics, monitoring, or observability dashboard</li>
+          <li>Working with dense time-series data or frequent data refresh</li>
+          <li>Already using Carbon and want charts that respect your token overrides</li>
+          <li>Shipping a product where bundle size matters</li>
+        </ul>
+      </div>
+      <div class="cds--tile cu-overview__when-tile">
+        <h3 class="cu-overview__when-title">Use @carbon/charts when you need</h3>
+        <ul class="cu-overview__list">
+          <li>Pie, donut, treemap, sankey, or alluvial charts</li>
+          <li>A chart type outside the observability set</li>
+          <li>A single library covering all visualization across a product</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</div>

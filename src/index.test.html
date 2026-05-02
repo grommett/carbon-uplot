@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test — Vanilla</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mocha@10/mocha.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/mocha@10/mocha.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chai@4/chai.js"></script>
+    <script>mocha.setup('bdd')</script>
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <script type="importmap">
+      { "imports": { "uplot": "https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.esm.js" } }
+    </script>
+    <script type="module">
+      import { createLineChart, createGauge, createStat, createHeatmap, createBarGauge, setTheme, CHART_RECREATED_EVENT } from '../dist/carbon-uplot.esm.js';
+      import { timestamps, cpuSeriesA, cpuSeriesB, heatmapData, HEATMAP_BUCKET_LABELS, BAR_GAUGE_CPU } from '../demo/demo-data.js';
+
+      const { assert } = chai;
+
+      const SERIES_ONE = [{ label: 'CPU' }];
+      const SERIES_TWO = [{ label: 'A' }, { label: 'B' }];
+
+      describe('createLineChart', () => {
+        let el;
+
+        beforeEach(() => {
+          el = document.createElement('div');
+          el.style.height = '200px';
+          document.body.appendChild(el);
+        });
+
+        afterEach(() => {
+          el.nextElementSibling?.remove();
+          el.remove();
+        });
+
+        it('renders a canvas into the container', () => {
+          createLineChart(el, { data: [timestamps, cpuSeriesA], series: SERIES_ONE });
+          assert.ok(el.querySelector('canvas'));
+        });
+
+        it('appends a legend with one button per series', () => {
+          createLineChart(el, { data: [timestamps, cpuSeriesA, cpuSeriesB], series: SERIES_TWO });
+          const legend = el.nextElementSibling;
+          assert.ok(legend);
+          assert.strictEqual(legend.querySelectorAll('button').length, 2);
+        });
+
+        it('removes canvas and legend on destroy', () => {
+          const chart = createLineChart(el, { data: [timestamps, cpuSeriesA], series: SERIES_ONE });
+          chart.destroy();
+          assert.isNull(el.querySelector('canvas'));
+          assert.isNull(el.nextElementSibling);
+        });
+
+        it('dispatches CHART_RECREATED_EVENT on theme change', () => {
+          createLineChart(el, { data: [timestamps, cpuSeriesA], series: SERIES_ONE });
+          let receivedEvent = null;
+          el.addEventListener(CHART_RECREATED_EVENT, (event) => { receivedEvent = event; }, { once: true });
+          setTheme('g90');
+          assert.ok(receivedEvent?.detail.chart);
+          receivedEvent.detail.chart.destroy();
+          Array.from(document.documentElement.style).forEach((prop) => {
+            document.documentElement.style.removeProperty(prop);
+          });
+        });
+      });
+
+      describe('createGauge', () => {
+        let el;
+
+        beforeEach(() => {
+          el = document.createElement('div');
+          document.body.appendChild(el);
+        });
+
+        afterEach(() => {
+          el.remove();
+        });
+
+        it('appends an SVG into the container', () => {
+          createGauge(el, { value: 50 });
+          assert.ok(el.querySelector('svg'));
+        });
+
+        it('renders the initial value in the label', () => {
+          createGauge(el, { value: 75, ticks: false });
+          assert.strictEqual(el.querySelector('text').textContent, '75');
+        });
+
+        it('updates the value label on setValue', () => {
+          const gauge = createGauge(el, { value: 50, ticks: false });
+          gauge.setValue({ value: 80 });
+          assert.strictEqual(el.querySelector('text').textContent, '80');
+        });
+
+        it('applies valueFormat to the label', () => {
+          createGauge(el, { value: 50, ticks: false, valueFormat: (value) => `${value}%` });
+          assert.strictEqual(el.querySelector('text').textContent, '50%');
+        });
+
+        it('renders 5 tick marks by default', () => {
+          createGauge(el, { value: 50 });
+          assert.strictEqual(el.querySelectorAll('line').length, 5);
+        });
+
+        it('renders no tick marks when ticks is false', () => {
+          createGauge(el, { value: 50, ticks: false });
+          assert.strictEqual(el.querySelectorAll('line').length, 0);
+        });
+      });
+
+      describe('createStat', () => {
+        let el;
+
+        beforeEach(() => {
+          el = document.createElement('div');
+          el.style.height = '140px';
+          document.body.appendChild(el);
+        });
+
+        afterEach(() => {
+          el.remove();
+        });
+
+        it('renders the initial value as text', () => {
+          createStat(el, { value: 42 });
+          assert.include(el.textContent, '42');
+        });
+
+        it('applies valueFormat to the displayed value', () => {
+          createStat(el, { value: 75, valueFormat: (value) => `${value}%` });
+          assert.include(el.textContent, '75%');
+        });
+
+        it('renders the label', () => {
+          createStat(el, { value: 50, label: 'CPU utilization' });
+          assert.include(el.textContent, 'CPU utilization');
+        });
+
+        it('renders a canvas for the sparkline when data is provided', () => {
+          createStat(el, { value: 50, data: [timestamps, cpuSeriesA] });
+          assert.ok(el.querySelector('canvas'));
+        });
+
+        it('updates the displayed value on setValue', () => {
+          const stat = createStat(el, { value: 42 });
+          stat.setValue({ value: 88 });
+          assert.include(el.textContent, '88');
+        });
+
+        it('does not render a canvas when sparkline is false', () => {
+          createStat(el, { value: 99, sparkline: false });
+          assert.isNull(el.querySelector('canvas'));
+        });
+
+        it('does not render the value when showValue is false', () => {
+          createStat(el, { value: 50, data: [timestamps, cpuSeriesA], showValue: false });
+          assert.ok(el.querySelector('canvas'));
+          assert.notInclude(el.textContent, '50');
+        });
+
+        it("applies text-align center to the value when align is 'center'", () => {
+          createStat(el, { value: 42, align: 'center' });
+          const valueEl = Array.from(el.querySelectorAll('[style*="font-size"]')).find((node) => node.textContent.trim() === '42');
+          assert.strictEqual(valueEl.style.textAlign, 'center');
+        });
+
+        it("applies text-align right to the value when align is 'right'", () => {
+          createStat(el, { value: 42, align: 'right' });
+          const valueEl = Array.from(el.querySelectorAll('[style*="font-size"]')).find((node) => node.textContent.trim() === '42');
+          assert.strictEqual(valueEl.style.textAlign, 'right');
+        });
+
+        it("uses a smaller font for size 'sm' than the default 'md'", () => {
+          const elSm = document.createElement('div');
+          elSm.style.height = '140px';
+          document.body.appendChild(elSm);
+          createStat(el, { value: 42 });
+          createStat(elSm, { value: 42, size: 'sm' });
+          const mdValueEl = Array.from(el.querySelectorAll('[style*="font-size"]')).find((node) => node.textContent.trim() === '42');
+          const smValueEl = Array.from(elSm.querySelectorAll('[style*="font-size"]')).find((node) => node.textContent.trim() === '42');
+          assert.isBelow(parseFloat(smValueEl.style.fontSize), parseFloat(mdValueEl.style.fontSize));
+          elSm.remove();
+        });
+
+        it("uses a larger font for size 'lg' than the default 'md'", () => {
+          const elLg = document.createElement('div');
+          elLg.style.height = '140px';
+          document.body.appendChild(elLg);
+          createStat(el, { value: 42 });
+          createStat(elLg, { value: 42, size: 'lg' });
+          const mdValueEl = Array.from(el.querySelectorAll('[style*="font-size"]')).find((node) => node.textContent.trim() === '42');
+          const lgValueEl = Array.from(elLg.querySelectorAll('[style*="font-size"]')).find((node) => node.textContent.trim() === '42');
+          assert.isAbove(parseFloat(lgValueEl.style.fontSize), parseFloat(mdValueEl.style.fontSize));
+          elLg.remove();
+        });
+
+        it("centers content vertically when verticalAlign is 'center'", () => {
+          createStat(el, { value: 42, sparkline: false, verticalAlign: 'center' });
+          const centered = Array.from(el.querySelectorAll('*')).find((node) => node.style.justifyContent === 'center');
+          assert.ok(centered);
+        });
+      });
+
+      describe('createHeatmap', () => {
+        let el;
+
+        beforeEach(() => {
+          el = document.createElement('div');
+          el.style.height = '220px';
+          document.body.appendChild(el);
+        });
+
+        afterEach(() => {
+          el.remove();
+        });
+
+        it('renders a canvas into the container', () => {
+          createHeatmap(el, { data: heatmapData });
+          assert.ok(el.querySelector('canvas'));
+        });
+
+        it('renders with bucket labels', () => {
+          const chart = createHeatmap(el, { data: heatmapData, bucketLabels: HEATMAP_BUCKET_LABELS });
+          assert.ok(el.querySelector('canvas'));
+          chart.destroy();
+        });
+
+        it('removes canvas on destroy', () => {
+          const chart = createHeatmap(el, { data: heatmapData });
+          chart.destroy();
+          assert.isNull(el.querySelector('canvas'));
+        });
+      });
+
+      describe('createBarGauge', () => {
+        let el;
+
+        beforeEach(() => {
+          el = document.createElement('div');
+          document.body.appendChild(el);
+        });
+
+        afterEach(() => {
+          el.remove();
+        });
+
+        it('renders label text for each series item', () => {
+          createBarGauge(el, { series: BAR_GAUGE_CPU });
+          assert.include(el.textContent, 'prod-db-primary');
+          assert.include(el.textContent, 'prod-web-02');
+        });
+
+        it('applies valueFormat to the displayed values', () => {
+          createBarGauge(el, { series: BAR_GAUGE_CPU, valueFormat: (v) => `${v}%` });
+          assert.include(el.textContent, '82%');
+        });
+
+        it('updates a row via setValue', () => {
+          const chart = createBarGauge(el, { series: BAR_GAUGE_CPU, valueFormat: (v) => `${v}%` });
+          chart.setValue(0, { value: 99 });
+          assert.include(el.textContent, '99%');
+        });
+      });
+
+      describe('inject-styles', () => {
+        it('injects a <style id="cu-styles"> into document.head', () => {
+          const styleEl = document.getElementById('cu-styles');
+          assert.ok(styleEl, 'cu-styles element not found');
+          assert.strictEqual(styleEl.tagName, 'STYLE');
+          assert.strictEqual(styleEl.parentElement, document.head);
+        });
+
+        it('does not inject a duplicate when called again', () => {
+          const count = document.querySelectorAll('#cu-styles').length;
+          assert.strictEqual(count, 1);
+        });
+
+        it('includes --cu-background in the injected styles', () => {
+          const styleEl = document.getElementById('cu-styles');
+          assert.include(styleEl.textContent, '--cu-background');
+        });
+      });
+
+      mocha.run();
+    </script>
+  </body>
+</html>

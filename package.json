@@ -1,0 +1,60 @@
+{
+  "name": "carbon-uplot",
+  "version": "0.1.0",
+  "description": "IBM Carbon design system chart components built on uPlot",
+  "type": "module",
+  "main": "dist/carbon-uplot.cjs.js",
+  "module": "dist/carbon-uplot.esm.js",
+  "exports": {
+    ".": {
+      "import": "./dist/carbon-uplot.esm.js",
+      "require": "./dist/carbon-uplot.cjs.js"
+    },
+    "./react": {
+      "import": "./dist/react.esm.js",
+      "require": "./dist/react.cjs.js"
+    },
+    "./web-components": {
+      "import": "./dist/web-components.esm.js",
+      "require": "./dist/web-components.cjs.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "ibm",
+    "carbon",
+    "uplot",
+    "charts",
+    "dataviz"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "npm run generate:themes && rollup -c",
+    "generate:themes": "node scripts/generate-themes.js",
+    "dev": "npm run generate:themes && (rollup -c --watch & eleventy --serve --port 3131)",
+    "test": "npm run build && (npx serve . --listen 3132 & sleep 1 && open http://localhost:3132/src/index.test.html http://localhost:3132/src/react.test.html http://localhost:3132/src/web-components.test.html)",
+    "demo": "npm run build && eleventy --serve --port 3131",
+    "demo:build": "npm run build && eleventy",
+    "format": "prettier --write \"src/**/*.js\" \"demo/**/*.js\" \"demo/**/*.html\""
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.5",
+    "@carbon/styles": "^1.104.0",
+    "@carbon/themes": "^11.71.0",
+    "@rollup/plugin-terser": "^1.0.0",
+    "prettier": "^3.8.2",
+    "prettier-plugin-jsdoc": "^1.8.0",
+    "rollup": "^4.60.1"
+  },
+  "peerDependencies": {
+    "react": ">=17",
+    "uplot": "^1.6.32"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  }
+}

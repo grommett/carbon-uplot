@@ -1,0 +1,351 @@
+---
+layout: demo-chart
+title: Bar
+active: bar
+script: /demo/bar.demo.js
+---
+
+<!-- Charts -->
+
+<div class="demo-grid" style="--demo-cols: 2">
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">Request volume — 30d</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-bar-single">&lt;/&gt;</button>
+    </div>
+    <div id="bar-single"></div>
+  </div>
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">Error count — xFormat day labels</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-bar-x-format">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="bar-x-format"></div>
+  </div>
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">p99 latency — valueFormat ms</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-bar-value-format">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="bar-value-format"></div>
+  </div>
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">Request volume by region — custom colors, legend top</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-bar-colors">&lt;/&gt;</button>
+    </div>
+    <div id="bar-colors"></div>
+  </div>
+</div>
+
+<!-- Code dialogs -->
+
+<dialog id="code-bar-single" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">Request volume — 30d</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg
+          focusable="false"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          aria-hidden="true"
+          width="20"
+          height="20"
+          viewBox="0 0 32 32"
+        >
+          <path
+            d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createBarChart } from 'carbon-uplot';
+
+createBarChart(el, {
+  data: [dailyTimestamps, dailyRequests],
+  series: [{ label: 'Requests' }],
+  valueFormat: (value) => value.toLocaleString(),
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-bar-chart&gt;&lt;/cu-bar-chart&gt;
+el.data = [dailyTimestamps, dailyRequests];
+el.series = [{ label: 'Requests' }];
+el.valueFormat = (value) => value.toLocaleString();
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { BarChart } from 'carbon-uplot/react';
+
+&lt;BarChart
+  data={[dailyTimestamps, dailyRequests]}
+  series={[{ label: 'Requests' }]}
+  valueFormat={(value) =&gt; value.toLocaleString()}
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="code-bar-x-format" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">Error count — xFormat day labels</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg
+          focusable="false"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          aria-hidden="true"
+          width="20"
+          height="20"
+          viewBox="0 0 32 32"
+        >
+          <path
+            d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createBarChart } from 'carbon-uplot';
+
+function dayLabel(timestamp) {
+  return new Date(timestamp * 1000).toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
+createBarChart(el, {
+  data: [dailyTimestamps, dailyErrors],
+  series: [{ label: 'Errors' }],
+  xFormat: dayLabel,
+  valueFormat: (value) => value.toLocaleString(),
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+function dayLabel(timestamp) {
+  return new Date(timestamp * 1000).toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
+// &lt;cu-bar-chart&gt;&lt;/cu-bar-chart&gt;
+el.data = [dailyTimestamps, dailyErrors];
+el.series = [{ label: 'Errors' }];
+el.xFormat = dayLabel;
+el.valueFormat = (value) => value.toLocaleString();
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { BarChart } from 'carbon-uplot/react';
+
+function dayLabel(timestamp) {
+  return new Date(timestamp * 1000).toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
+&lt;BarChart
+  data={[dailyTimestamps, dailyErrors]}
+  series={[{ label: 'Errors' }]}
+  xFormat={dayLabel}
+  valueFormat={(value) =&gt; value.toLocaleString()}
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="code-bar-value-format" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">p99 latency — valueFormat ms</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg
+          focusable="false"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          aria-hidden="true"
+          width="20"
+          height="20"
+          viewBox="0 0 32 32"
+        >
+          <path
+            d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createBarChart } from 'carbon-uplot';
+
+createBarChart(el, {
+  data: [dailyTimestamps, dailyP99],
+  series: [{ label: 'p99 latency' }],
+  valueFormat: (value) => `${value.toFixed(0)} ms`,
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-bar-chart&gt;&lt;/cu-bar-chart&gt;
+el.data = [dailyTimestamps, dailyP99];
+el.series = [{ label: 'p99 latency' }];
+el.valueFormat = (value) => `${value.toFixed(0)} ms`;
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { BarChart } from 'carbon-uplot/react';
+
+&lt;BarChart
+  data={[dailyTimestamps, dailyP99]}
+  series={[{ label: 'p99 latency' }]}
+  valueFormat={(value) =&gt; `${value.toFixed(0)} ms`}
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="code-bar-colors" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">Request volume by region — custom colors, legend top</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg
+          focusable="false"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          aria-hidden="true"
+          width="20"
+          height="20"
+          viewBox="0 0 32 32"
+        >
+          <path
+            d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createBarChart } from 'carbon-uplot';
+
+createBarChart(el, {
+  data: [dailyTimestamps, dailyRequests, dailyRequestsB, dailyRequestsC],
+  series: [
+    { label: 'us-east', color: '#4589ff' },
+    { label: 'us-south', color: '#ff7eb6' },
+    { label: 'eu-de', color: '#42be65' },
+  ],
+  valueFormat: (value) => value.toLocaleString(),
+  legend: 'top',
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-bar-chart legend="top"&gt;&lt;/cu-bar-chart&gt;
+el.data = [dailyTimestamps, dailyRequests, dailyRequestsB, dailyRequestsC];
+el.series = [
+  { label: 'us-east', color: '#4589ff' },
+  { label: 'us-south', color: '#ff7eb6' },
+  { label: 'eu-de', color: '#42be65' },
+];
+el.valueFormat = (value) => value.toLocaleString();
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { BarChart } from 'carbon-uplot/react';
+
+&lt;BarChart
+  data={[dailyTimestamps, dailyRequests, dailyRequestsB, dailyRequestsC]}
+  series={[
+    { label: 'us-east', color: '#4589ff' },
+    { label: 'us-south', color: '#ff7eb6' },
+    { label: 'eu-de', color: '#42be65' },
+  ]}
+  valueFormat={(value) =&gt; value.toLocaleString()}
+  legend="top"
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>

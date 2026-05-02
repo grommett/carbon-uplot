@@ -1,0 +1,164 @@
+---
+layout: demo-chart
+title: Heatmap
+active: heatmap
+script: /demo/heatmap.demo.js
+---
+
+<!-- Charts -->
+
+<div class="demo-grid" style="--demo-cols: 2">
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">Latency distribution — default color</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-heatmap-latency">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="heatmap-latency" class="demo-heatmap"></div>
+  </div>
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">Latency distribution — custom color</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-heatmap-teal">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="heatmap-teal" class="demo-heatmap"></div>
+  </div>
+</div>
+
+<!-- Code dialogs -->
+
+<dialog id="code-heatmap-latency" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">Latency distribution — default color</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg
+          focusable="false"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          aria-hidden="true"
+          width="20"
+          height="20"
+          viewBox="0 0 32 32"
+        >
+          <path
+            d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createHeatmap } from 'carbon-uplot';
+
+const BUCKET_LABELS = ['0–10ms', '10–25ms', '25–50ms',
+  '50–100ms', '100–250ms', '250–500ms', '500ms+'];
+
+createHeatmap(el, {
+  data: [timestamps, ...buckets],
+  bucketLabels: BUCKET_LABELS,
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-heatmap&gt;&lt;/cu-heatmap&gt;
+el.bucketLabels = BUCKET_LABELS;
+el.data = [timestamps, ...buckets];
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { Heatmap } from 'carbon-uplot/react';
+
+&lt;Heatmap
+  data={[timestamps, ...buckets]}
+  bucketLabels={BUCKET_LABELS}
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="code-heatmap-teal" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">Latency distribution — custom color</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg
+          focusable="false"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          aria-hidden="true"
+          width="20"
+          height="20"
+          viewBox="0 0 32 32"
+        >
+          <path
+            d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createHeatmap } from 'carbon-uplot';
+
+createHeatmap(el, {
+  data: [timestamps, ...buckets],
+  bucketLabels: BUCKET_LABELS,
+  color: '#3ddbd9',
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-heatmap color="#3ddbd9"&gt;&lt;/cu-heatmap&gt;
+el.bucketLabels = BUCKET_LABELS;
+el.data = [timestamps, ...buckets];
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { Heatmap } from 'carbon-uplot/react';
+
+&lt;Heatmap
+  data={[timestamps, ...buckets]}
+  bucketLabels={BUCKET_LABELS}
+  color="#3ddbd9"
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>

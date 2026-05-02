@@ -1,0 +1,432 @@
+---
+layout: demo-chart
+title: Bar Gauge
+active: bar-gauge
+script: /demo/bar-gauge.demo.js
+---
+
+<!-- Charts -->
+
+<div class="demo-grid" style="--demo-cols: 3">
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">CPU utilization — informational</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-bar-gauge-default">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="bar-gauge-default"></div>
+  </div>
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">CPU utilization — thresholds</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-bar-gauge-cpu">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="bar-gauge-cpu"></div>
+  </div>
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">Availability — inverted thresholds</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-bar-gauge-cpu-thresholds">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="bar-gauge-cpu-thresholds"></div>
+  </div>
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">Disk usage — custom color</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-bar-gauge-disk">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="bar-gauge-disk"></div>
+  </div>
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">Single meter — heap utilization</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-bar-gauge-single">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="bar-gauge-single"></div>
+  </div>
+</div>
+
+<!-- Code dialogs -->
+
+<dialog id="code-bar-gauge-default" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">CPU utilization — informational</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true" width="20" height="20" viewBox="0 0 32 32">
+          <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createBarGauge } from 'carbon-uplot';
+
+createBarGauge(el, {
+  series: [
+    { label: 'prod-db-primary', value: 82 },
+    { label: 'prod-db-replica-1', value: 45 },
+    { label: 'prod-db-replica-2', value: 91 },
+    { label: 'prod-web-01', value: 34 },
+    { label: 'prod-web-02', value: 67 },
+  ],
+  valueFormat: (v) => `${v}%`,
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-bar-gauge&gt;&lt;/cu-bar-gauge&gt;
+el.series = [
+  { label: 'prod-db-primary', value: 82 },
+  { label: 'prod-db-replica-1', value: 45 },
+  { label: 'prod-db-replica-2', value: 91 },
+  { label: 'prod-web-01', value: 34 },
+  { label: 'prod-web-02', value: 67 },
+];
+el.valueFormat = (v) => `${v}%`;
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { BarGauge } from 'carbon-uplot/react';
+
+const series = useMemo(() => [
+  { label: 'prod-db-primary', value: 82 },
+  { label: 'prod-db-replica-1', value: 45 },
+  { label: 'prod-db-replica-2', value: 91 },
+  { label: 'prod-web-01', value: 34 },
+  { label: 'prod-web-02', value: 67 },
+], []);
+
+&lt;BarGauge
+  series={series}
+  valueFormat={(v) => `${v}%`}
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="code-bar-gauge-cpu" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">CPU utilization — thresholds</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true" width="20" height="20" viewBox="0 0 32 32">
+          <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createBarGauge } from 'carbon-uplot';
+
+createBarGauge(el, {
+  series: [
+    { label: 'prod-db-primary', value: 82 },
+    { label: 'prod-db-replica-1', value: 45 },
+    { label: 'prod-db-replica-2', value: 91 },
+    { label: 'prod-web-01', value: 34 },
+    { label: 'prod-web-02', value: 67 },
+  ],
+  thresholds: [
+    { value: 70, status: 'warning' },
+    { value: 85, status: 'error' },
+  ],
+  valueFormat: (v) => `${v}%`,
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-bar-gauge&gt;&lt;/cu-bar-gauge&gt;
+el.series = [
+  { label: 'prod-db-primary', value: 82 },
+  { label: 'prod-db-replica-1', value: 45 },
+  { label: 'prod-db-replica-2', value: 91 },
+  { label: 'prod-web-01', value: 34 },
+  { label: 'prod-web-02', value: 67 },
+];
+el.thresholds = [
+  { value: 70, status: 'warning' },
+  { value: 85, status: 'error' },
+];
+el.valueFormat = (v) => `${v}%`;
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { BarGauge } from 'carbon-uplot/react';
+
+const series = useMemo(() => [
+  { label: 'prod-db-primary', value: 82 },
+  { label: 'prod-db-replica-1', value: 45 },
+  { label: 'prod-db-replica-2', value: 91 },
+  { label: 'prod-web-01', value: 34 },
+  { label: 'prod-web-02', value: 67 },
+], []);
+const thresholds = useMemo(() => [
+  { value: 70, status: 'warning' },
+  { value: 85, status: 'error' },
+], []);
+
+&lt;BarGauge
+  series={series}
+  thresholds={thresholds}
+  valueFormat={(v) => `${v}%`}
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="code-bar-gauge-cpu-thresholds" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">Availability — inverted thresholds</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true" width="20" height="20" viewBox="0 0 32 32">
+          <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createBarGauge } from 'carbon-uplot';
+
+createBarGauge(el, {
+  series: [
+    { label: 'prod-db-primary', value: 98.2 },
+    { label: 'prod-db-replica-1', value: 87.5 },
+    { label: 'prod-db-replica-2', value: 99.9 },
+    { label: 'prod-web-01', value: 76.1 },
+    { label: 'prod-web-02', value: 94.3 },
+  ],
+  thresholds: [
+    { value: 80, status: 'error' },
+    { value: 95, status: 'warning' },
+  ],
+  inverted: true,
+  valueFormat: (v) => `${v.toFixed(1)}%`,
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-bar-gauge&gt;&lt;/cu-bar-gauge&gt;
+el.series = [
+  { label: 'prod-db-primary', value: 98.2 },
+  { label: 'prod-db-replica-1', value: 87.5 },
+  { label: 'prod-db-replica-2', value: 99.9 },
+  { label: 'prod-web-01', value: 76.1 },
+  { label: 'prod-web-02', value: 94.3 },
+];
+el.thresholds = [
+  { value: 80, status: 'error' },
+  { value: 95, status: 'warning' },
+];
+el.inverted = true;
+el.valueFormat = (v) => `${v.toFixed(1)}%`;
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { BarGauge } from 'carbon-uplot/react';
+
+const series = useMemo(() => [...], []);
+const thresholds = useMemo(() => [
+  { value: 80, status: 'error' },
+  { value: 95, status: 'warning' },
+], []);
+
+&lt;BarGauge
+  series={series}
+  thresholds={thresholds}
+  inverted
+  valueFormat={(v) => `${v.toFixed(1)}%`}
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="code-bar-gauge-disk" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">Disk usage — custom color</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true" width="20" height="20" viewBox="0 0 32 32">
+          <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createBarGauge } from 'carbon-uplot';
+
+createBarGauge(el, {
+  series: [
+    { label: 'prod-db-primary', value: 380 },
+    { label: 'prod-db-replica-1', value: 215 },
+    { label: 'prod-db-replica-2', value: 450 },
+    { label: 'prod-web-01', value: 67 },
+    { label: 'prod-web-02', value: 124 },
+  ],
+  max: 500,
+  color: '#3ddbd9',
+  valueFormat: (v) => `${v} GB`,
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-bar-gauge color="#3ddbd9"&gt;&lt;/cu-bar-gauge&gt;
+el.series = [
+  { label: 'prod-db-primary', value: 380 },
+  { label: 'prod-db-replica-1', value: 215 },
+  { label: 'prod-db-replica-2', value: 450 },
+  { label: 'prod-web-01', value: 67 },
+  { label: 'prod-web-02', value: 124 },
+];
+el.max = 500;
+el.valueFormat = (v) => `${v} GB`;
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { BarGauge } from 'carbon-uplot/react';
+
+const series = useMemo(() => [...], []);
+
+&lt;BarGauge
+  series={series}
+  max={500}
+  color="#3ddbd9"
+  valueFormat={(v) => `${v} GB`}
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="code-bar-gauge-single" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">Single meter — heap utilization</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true" width="20" height="20" viewBox="0 0 32 32">
+          <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createBarGauge } from 'carbon-uplot';
+
+createBarGauge(el, {
+  series: [{ label: 'Heap used', value: 430 }],
+  max: 512,
+  valueFormat: (v) => `${v} MB`,
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-bar-gauge&gt;&lt;/cu-bar-gauge&gt;
+el.series = [{ label: 'Heap used', value: 430 }];
+el.max = 512;
+el.valueFormat = (v) => `${v} MB`;
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { BarGauge } from 'carbon-uplot/react';
+
+const series = useMemo(() => [
+  { label: 'Heap used', value: 430 },
+], []);
+
+&lt;BarGauge
+  series={series}
+  max={512}
+  valueFormat={(v) => `${v} MB`}
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>

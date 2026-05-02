@@ -1,0 +1,53 @@
+<header aria-label="Carbon µPlot" class="cds--header">
+  <a href="/" class="cds--header__name">
+    <span class="cds--header__name--prefix">Carbon</span>&nbsp;<span>µPlot</span>
+  </a>
+  <nav aria-label="Carbon µPlot" class="cds--header__nav">
+    <ul class="cds--header__menu-bar">
+      <li>
+        <a href="/line.html" class="cds--header__menu-item{% if active == 'line' %} cds--header__menu-item--current{% endif %}" tabindex="0"
+          ><span class="cds--text-truncate--end">Line</span></a
+        >
+      </li>
+      <li>
+        <a href="/area.html" class="cds--header__menu-item{% if active == 'area' %} cds--header__menu-item--current{% endif %}" tabindex="0"
+          ><span class="cds--text-truncate--end">Area</span></a
+        >
+      </li>
+      <li>
+        <a href="/scatter.html" class="cds--header__menu-item{% if active == 'scatter' %} cds--header__menu-item--current{% endif %}" tabindex="0"
+          ><span class="cds--text-truncate--end">Scatter</span></a
+        >
+      </li>
+      <li>
+        <a href="/bar.html" class="cds--header__menu-item{% if active == 'bar' %} cds--header__menu-item--current{% endif %}" tabindex="0"
+          ><span class="cds--text-truncate--end">Bar</span></a
+        >
+      </li>
+      <li>
+        <a href="/gauge.html" class="cds--header__menu-item{% if active == 'gauge' %} cds--header__menu-item--current{% endif %}" tabindex="0"
+          ><span class="cds--text-truncate--end">Gauge</span></a
+        >
+      </li>
+      <li>
+        <a href="/stat.html" class="cds--header__menu-item{% if active == 'stat' %} cds--header__menu-item--current{% endif %}" tabindex="0"
+          ><span class="cds--text-truncate--end">Stat</span></a
+        >
+      </li>
+      <li>
+        <a href="/heatmap.html" class="cds--header__menu-item{% if active == 'heatmap' %} cds--header__menu-item--current{% endif %}" tabindex="0"
+          ><span class="cds--text-truncate--end">Heatmap</span></a
+        >
+      </li>
+      <li>
+        <a href="/bar-gauge.html" class="cds--header__menu-item{% if active == 'bar-gauge' %} cds--header__menu-item--current{% endif %}" tabindex="0"
+          ><span class="cds--text-truncate--end">Bar Gauge</span></a
+        >
+      </li>
+    </ul>
+  </nav>
+  <div class="cds--header__global">
+    <cds-uplot-theme-switcher></cds-uplot-theme-switcher>
+    <script type="module" src="/demo/components/cds-uplot-theme-switcher.js"></script>
+  </div>
+</header>

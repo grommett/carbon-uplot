@@ -1,0 +1,907 @@
+---
+layout: demo-chart
+title: Gauge
+active: gauge
+script: /demo/gauge.demo.js
+---
+
+<!-- Charts -->
+
+<div class="demo-grid" style="--demo-cols: 3">
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">Informational — no thresholds</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-gauge-cpu-info">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="gauge-cpu-info" class="demo-gauge"></div>
+  </div>
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">Custom color</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-gauge-purple">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="gauge-purple" class="demo-gauge"></div>
+  </div>
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">Custom range — no ticks, valueFormat</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-gauge-disk-info">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="gauge-disk-info" class="demo-gauge"></div>
+  </div>
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">Thresholds — low healthy, high critical</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-gauge-cpu-thresholds">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="gauge-cpu-thresholds" class="demo-gauge"></div>
+  </div>
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">Error rate — custom range, thresholds</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-gauge-error-rate">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="gauge-error-rate" class="demo-gauge"></div>
+  </div>
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">No ticks</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-gauge-no-ticks">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="gauge-no-ticks" class="demo-gauge"></div>
+  </div>
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">Inverted thresholds — high is healthy</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-gauge-mem-free-healthy">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="gauge-mem-free-healthy" class="demo-gauge"></div>
+  </div>
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">Inverted thresholds — low free memory</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-gauge-mem-free-low">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="gauge-mem-free-low" class="demo-gauge"></div>
+  </div>
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">p99 latency — custom range, thresholds</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-gauge-p99">&lt;/&gt;</button>
+    </div>
+    <div id="gauge-p99" class="demo-gauge"></div>
+  </div>
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">Live — setValue()</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-gauge-live">&lt;/&gt;</button>
+    </div>
+    <div id="gauge-live" class="demo-gauge"></div>
+  </div>
+</div>
+
+<!-- Code dialogs -->
+
+<dialog id="code-gauge-cpu-info" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">Informational — no thresholds</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg
+          focusable="false"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          aria-hidden="true"
+          width="20"
+          height="20"
+          viewBox="0 0 32 32"
+        >
+          <path
+            d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createGauge } from 'carbon-uplot';
+
+createGauge(el, {
+  value: 42,
+  label: 'CPU utilization',
+  valueFormat: (value) => `${value}%`,
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-gauge label="CPU utilization"&gt;&lt;/cu-gauge&gt;
+el.value = 42;
+el.valueFormat = (value) => `${value}%`;
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { Gauge } from 'carbon-uplot/react';
+
+&lt;Gauge
+  value={42}
+  label="CPU utilization"
+  valueFormat={(value) =&gt; `${value}%`}
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="code-gauge-purple" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">Custom color</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg
+          focusable="false"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          aria-hidden="true"
+          width="20"
+          height="20"
+          viewBox="0 0 32 32"
+        >
+          <path
+            d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createGauge } from 'carbon-uplot';
+
+createGauge(el, {
+  value: 57,
+  ticks: false,
+  valueFormat: (value) => `${value}%`,
+  color: 'var(--cds-purple-60, #8a3ffc)',
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-gauge color="var(--cds-purple-60, #8a3ffc)"&gt;&lt;/cu-gauge&gt;
+el.ticks = false;
+el.value = 57;
+el.valueFormat = (value) => `${value}%`;
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { Gauge } from 'carbon-uplot/react';
+
+&lt;Gauge
+  value={57}
+  ticks={false}
+  valueFormat={(value) =&gt; `${value}%`}
+  color="var(--cds-purple-60, #8a3ffc)"
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="code-gauge-disk-info" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">Custom range — no ticks, valueFormat</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg
+          focusable="false"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          aria-hidden="true"
+          width="20"
+          height="20"
+          viewBox="0 0 32 32"
+        >
+          <path
+            d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createGauge } from 'carbon-uplot';
+
+createGauge(el, {
+  value: 1_840,
+  min: 0,
+  max: 4_096,
+  label: 'Disk used',
+  ticks: false,
+  valueFormat: (value) => `${(value / 1024).toFixed(1)} TB`,
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-gauge label="Disk used"&gt;&lt;/cu-gauge&gt;
+el.ticks = false;
+el.value = 1_840;
+el.min = 0;
+el.max = 4_096;
+el.valueFormat = (value) => `${(value / 1024).toFixed(1)} TB`;
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { Gauge } from 'carbon-uplot/react';
+
+&lt;Gauge
+  value={1_840}
+  min={0}
+  max={4_096}
+  label="Disk used"
+  ticks={false}
+  valueFormat={(value) =&gt; `${(value / 1024).toFixed(1)} TB`}
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="code-gauge-cpu-thresholds" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">Thresholds — low healthy, high critical</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg
+          focusable="false"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          aria-hidden="true"
+          width="20"
+          height="20"
+          viewBox="0 0 32 32"
+        >
+          <path
+            d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createGauge } from 'carbon-uplot';
+
+createGauge(el, {
+  value: 78,
+  label: 'CPU utilization',
+  valueFormat: (value) => `${value}%`,
+  thresholds: [
+    { value: 60, status: 'warning' },
+    { value: 85, status: 'error' },
+  ],
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-gauge label="CPU utilization"&gt;&lt;/cu-gauge&gt;
+el.value = 78;
+el.valueFormat = (value) => `${value}%`;
+el.thresholds = [
+  { value: 60, status: 'warning' },
+  { value: 85, status: 'error' },
+];
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { Gauge } from 'carbon-uplot/react';
+
+&lt;Gauge
+  value={78}
+  label="CPU utilization"
+  valueFormat={(value) =&gt; `${value}%`}
+  thresholds={[
+    { value: 60, status: 'warning' },
+    { value: 85, status: 'error' },
+  ]}
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="code-gauge-error-rate" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">Error rate — custom range, thresholds</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg
+          focusable="false"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          aria-hidden="true"
+          width="20"
+          height="20"
+          viewBox="0 0 32 32"
+        >
+          <path
+            d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createGauge } from 'carbon-uplot';
+
+createGauge(el, {
+  value: 4.2,
+  min: 0,
+  max: 10,
+  label: 'Error rate',
+  valueFormat: (value) => `${value.toFixed(1)}%`,
+  thresholds: [
+    { value: 2, status: 'warning' },
+    { value: 5, status: 'error' },
+  ],
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-gauge label="Error rate"&gt;&lt;/cu-gauge&gt;
+el.value = 4.2;
+el.min = 0;
+el.max = 10;
+el.valueFormat = (value) => `${value.toFixed(1)}%`;
+el.thresholds = [
+  { value: 2, status: 'warning' },
+  { value: 5, status: 'error' },
+];
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { Gauge } from 'carbon-uplot/react';
+
+&lt;Gauge
+  value={4.2}
+  min={0}
+  max={10}
+  label="Error rate"
+  valueFormat={(value) =&gt; `${value.toFixed(1)}%`}
+  thresholds={[
+    { value: 2, status: 'warning' },
+    { value: 5, status: 'error' },
+  ]}
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="code-gauge-no-ticks" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">No ticks</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg
+          focusable="false"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          aria-hidden="true"
+          width="20"
+          height="20"
+          viewBox="0 0 32 32"
+        >
+          <path
+            d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createGauge } from 'carbon-uplot';
+
+createGauge(el, {
+  value: 63,
+  label: 'CPU utilization',
+  valueFormat: (value) => `${value}%`,
+  ticks: false,
+  thresholds: [
+    { value: 60, status: 'warning' },
+    { value: 85, status: 'error' },
+  ],
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-gauge label="CPU utilization"&gt;&lt;/cu-gauge&gt;
+el.ticks = false;
+el.value = 63;
+el.valueFormat = (value) => `${value}%`;
+el.thresholds = [
+  { value: 60, status: 'warning' },
+  { value: 85, status: 'error' },
+];
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { Gauge } from 'carbon-uplot/react';
+
+&lt;Gauge
+  value={63}
+  label="CPU utilization"
+  valueFormat={(value) =&gt; `${value}%`}
+  ticks={false}
+  thresholds={[
+    { value: 60, status: 'warning' },
+    { value: 85, status: 'error' },
+  ]}
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="code-gauge-mem-free-healthy" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">Inverted thresholds — high is healthy</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg
+          focusable="false"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          aria-hidden="true"
+          width="20"
+          height="20"
+          viewBox="0 0 32 32"
+        >
+          <path
+            d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createGauge } from 'carbon-uplot';
+
+createGauge(el, {
+  value: 68,
+  label: 'Memory free',
+  valueFormat: (value) => `${value}%`,
+  thresholds: [
+    { value: 0, status: 'error' },
+    { value: 20, status: 'warning' },
+    { value: 50, status: 'success' },
+  ],
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-gauge label="Memory free"&gt;&lt;/cu-gauge&gt;
+el.value = 68;
+el.valueFormat = (value) => `${value}%`;
+el.thresholds = [
+  { value: 0, status: 'error' },
+  { value: 20, status: 'warning' },
+  { value: 50, status: 'success' },
+];
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { Gauge } from 'carbon-uplot/react';
+
+&lt;Gauge
+  value={68}
+  label="Memory free"
+  valueFormat={(value) =&gt; `${value}%`}
+  thresholds={[
+    { value: 0, status: 'error' },
+    { value: 20, status: 'warning' },
+    { value: 50, status: 'success' },
+  ]}
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="code-gauge-mem-free-low" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">Inverted thresholds — low free memory (critical)</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg
+          focusable="false"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          aria-hidden="true"
+          width="20"
+          height="20"
+          viewBox="0 0 32 32"
+        >
+          <path
+            d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createGauge } from 'carbon-uplot';
+
+createGauge(el, {
+  value: 11,
+  label: 'Memory free',
+  valueFormat: (value) => `${value}%`,
+  thresholds: [
+    { value: 0, status: 'error' },
+    { value: 20, status: 'warning' },
+    { value: 50, status: 'success' },
+  ],
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-gauge label="Memory free"&gt;&lt;/cu-gauge&gt;
+el.value = 11;
+el.valueFormat = (value) => `${value}%`;
+el.thresholds = [
+  { value: 0, status: 'error' },
+  { value: 20, status: 'warning' },
+  { value: 50, status: 'success' },
+];
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { Gauge } from 'carbon-uplot/react';
+
+&lt;Gauge
+  value={11}
+  label="Memory free"
+  valueFormat={(value) =&gt; `${value}%`}
+  thresholds={[
+    { value: 0, status: 'error' },
+    { value: 20, status: 'warning' },
+    { value: 50, status: 'success' },
+  ]}
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="code-gauge-p99" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">p99 latency — custom range, thresholds</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg
+          focusable="false"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          aria-hidden="true"
+          width="20"
+          height="20"
+          viewBox="0 0 32 32"
+        >
+          <path
+            d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createGauge } from 'carbon-uplot';
+
+createGauge(el, {
+  value: 480,
+  min: 0,
+  max: 1000,
+  label: 'p99 latency',
+  valueFormat: (value) => `${value}ms`,
+  thresholds: [
+    { value: 300, status: 'warning' },
+    { value: 700, status: 'error' },
+  ],
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-gauge label="p99 latency"&gt;&lt;/cu-gauge&gt;
+el.value = 480;
+el.min = 0;
+el.max = 1000;
+el.valueFormat = (value) => `${value}ms`;
+el.thresholds = [
+  { value: 300, status: 'warning' },
+  { value: 700, status: 'error' },
+];
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { Gauge } from 'carbon-uplot/react';
+
+&lt;Gauge
+  value={480}
+  min={0}
+  max={1000}
+  label="p99 latency"
+  valueFormat={(value) =&gt; `${value}ms`}
+  thresholds={[
+    { value: 300, status: 'warning' },
+    { value: 700, status: 'error' },
+  ]}
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="code-gauge-live" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">Live — setValue()</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg
+          focusable="false"
+          preserveAspectRatio="xMidYMid meet"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          aria-hidden="true"
+          width="20"
+          height="20"
+          viewBox="0 0 32 32"
+        >
+          <path
+            d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createGauge } from 'carbon-uplot';
+
+const gauge = createGauge(el, {
+  value: 45,
+  label: 'Memory free (live)',
+  valueFormat: (value) => `${value}%`,
+  thresholds: [
+    { value: 0, status: 'error' },
+    { value: 20, status: 'warning' },
+    { value: 50, status: 'success' },
+  ],
+});
+
+let liveValue = 45;
+setInterval(() => {
+  liveValue = Math.min(100, Math.max(0, liveValue + (Math.random() - 0.48) * 6));
+  gauge.setValue({ value: Math.round(liveValue) });
+}, 1000);
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden>
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-gauge label="Memory free (live)"&gt;&lt;/cu-gauge&gt;
+el.value = 45;
+el.valueFormat = (value) => `${value}%`;
+el.thresholds = [
+  { value: 0, status: 'error' },
+  { value: 20, status: 'warning' },
+  { value: 50, status: 'success' },
+];
+
+let liveValue = 45;
+setInterval(() => {
+  liveValue = Math.min(100, Math.max(0, liveValue + (Math.random() - 0.48) * 6));
+  el.value = Math.round(liveValue);
+}, 1000);
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden>
+            <pre><code>
+import { Gauge } from 'carbon-uplot/react';
+import { useState, useEffect } from 'react';
+
+function LiveGauge() {
+  const [value, setValue] = useState(45);
+
+  useEffect(() => {
+    let current = 45;
+    const id = setInterval(() => {
+      current = Math.min(100, Math.max(0, current + (Math.random() - 0.48) * 6));
+      setValue(Math.round(current));
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    &lt;Gauge
+      value={value}
+      label="Memory free (live)"
+      valueFormat={(v) =&gt; `${v}%`}
+      thresholds={[
+        { value: 0, status: 'error' },
+        { value: 20, status: 'warning' },
+        { value: 50, status: 'success' },
+      ]}
+    /&gt;
+  );
+}
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>

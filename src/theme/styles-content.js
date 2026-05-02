@@ -1,0 +1,7 @@
+/**
+ * AUTO-GENERATED — do not edit by hand.
+ * Re-generate by running: npm run generate:themes
+ *
+ * Source: @carbon/themes 11.71.0
+ */
+export const STYLES_CONTENT = ":root {\n  --cu-background: var(--cds-background, #ffffff);\n  --cu-layer-01: var(--cds-layer-01, #f4f4f4);\n  --cu-layer-02: var(--cds-layer-02, #ffffff);\n  --cu-text-primary: var(--cds-text-primary, #161616);\n  --cu-text-secondary: var(--cds-text-secondary, #525252);\n  --cu-text-helper: var(--cds-text-helper, #6f6f6f);\n  --cu-border-subtle: var(--cds-border-subtle-01, #c6c6c6);\n  --cu-border-subtle-02: var(--cds-border-subtle-02, #e0e0e0);\n  --cu-axis: var(--cds-border-strong-01, #8d8d8d);\n  --cu-interactive: var(--cds-interactive, #0f62fe);\n  --cu-support-error: var(--cds-support-error, #da1e28);\n  --cu-support-warning: var(--cds-support-warning, #f1c21b);\n  --cu-support-success: var(--cds-support-success, #24a148);\n  --cu-support-info: var(--cds-support-info, #0043ce);\n  --cu-layer: var(--cu-layer-01);\n  --cu-grid: rgba(0,0,0,0.07);\n}\n\n.cds--g90 {\n  --cu-grid: rgba(255,255,255,0.09);\n}\n\n.cds--g100 {\n  --cu-grid: rgba(255,255,255,0.07);\n}\n\n.cds--tile {\n  --cu-tooltip-bg: var(--cu-layer-01);\n}\n\n.u-select {\n  background: rgba(15, 98, 254, 0.1);\n  border-left: 1px solid rgba(15, 98, 254, 0.5);\n  border-right: 1px solid rgba(15, 98, 254, 0.5);\n}\n\n.cds--g90 .u-select,\n.cds--g100 .u-select {\n  background: rgba(69, 137, 255, 0.2);\n  border-left: 1px solid rgba(69, 137, 255, 0.65);\n  border-right: 1px solid rgba(69, 137, 255, 0.65);\n}\n";

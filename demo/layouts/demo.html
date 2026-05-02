@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="/demo/components/cds-uplot-restore-theme.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Carbon µPlot — {{ title }}</title>
+    <link rel="stylesheet" href="/assets/carbon.css" />
+    <link rel="stylesheet" href="/demo/carbon-demo.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.min.css" />
+    {%- if tech == 'react' %}
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+    {%- endif %}
+  </head>
+  <body>
+    <cds-uplot-header></cds-uplot-header>
+    <script type="module" src="/demo/components/cds-uplot-header.js"></script>
+    {%- if tech == 'react' %}
+    <main id="root"></main>
+    {%- else %}
+    <main>{{ content }}</main>
+    {%- endif %}
+    <script type="importmap">
+      {
+        "imports": {
+          "uplot": "https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.esm.js"{%- if tech == 'react' %},
+          "react": "https://esm.sh/react@18",
+          "react-dom/client": "https://esm.sh/react-dom@18/client"{%- endif %}
+        }
+      }
+    </script>
+  </body>
+</html>

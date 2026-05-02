@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Export chart images</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.min.css" />
+    <style>
+      body { background: #f4f4f4; font-family: sans-serif; padding: 2rem; }
+      .chart-wrap { margin-bottom: 2rem; }
+      label { display: block; font-size: 0.75rem; margin-bottom: 0.5rem; color: #525252; }
+      button { margin-top: 0.5rem; padding: 0.5rem 1rem; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <h1>Chart image export</h1>
+    <p>Each chart renders below. Click "Download" to save the PNG with a transparent background.</p>
+
+    <div class="chart-wrap"><label>Line</label><div id="c-line" style="height:300px"></div><button data-target="c-line" data-name="thumb-line.png">Download</button></div>
+    <div class="chart-wrap"><label>Area</label><div id="c-area" style="height:300px"></div><button data-target="c-area" data-name="thumb-area.png">Download</button></div>
+    <div class="chart-wrap"><label>Bar</label><div id="c-bar" style="height:300px"></div><button data-target="c-bar" data-name="thumb-bar.png">Download</button></div>
+    <div class="chart-wrap"><label>Scatter</label><div id="c-scatter" style="height:300px"></div><button data-target="c-scatter" data-name="thumb-scatter.png">Download</button></div>
+    <div class="chart-wrap"><label>Gauge</label><div id="c-gauge" style="height:300px; max-width: 400px;"></div><button data-target="c-gauge" data-name="thumb-gauge.png">Download</button></div>
+
+    <script type="importmap">
+      { "imports": { "uplot": "https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.esm.js" } }
+    </script>
+    <script type="module">
+      import uPlot from 'uplot';
+      import {
+        createLineChart,
+        createAreaChart,
+        createBarChart,
+        createScatterChart,
+        createGauge,
+      } from '../dist/carbon-uplot.esm.js';
+      import {
+        timestamps,
+        cpuSeriesA,
+        cpuSeriesB,
+        cpuSeriesC,
+        dailyTimestamps,
+        dailyRequests,
+      } from '../demo/demo-data.js';
+      import { seededRandomSeries } from '../demo/data-utils.js';
+
+      const DENSE_COUNT = 400;
+      const denseX = seededRandomSeries(DENSE_COUNT, 5, 95, 42);
+      const denseNoise1 = seededRandomSeries(DENSE_COUNT, -30, 30, 11);
+      const denseNoise2 = seededRandomSeries(DENSE_COUNT, -25, 25, 23);
+      const denseNoise3 = seededRandomSeries(DENSE_COUNT, -20, 20, 37);
+      const denseY1 = denseX.map((x, i) => +(x * 5.8 + 90 + denseNoise1[i]).toFixed(1));
+      const denseY2 = denseX.map((x, i) => +(x * 3.5 + 210 + denseNoise2[i]).toFixed(1));
+      const denseY3 = denseX.map((x, i) => +(x * 2.1 + 350 + denseNoise3[i]).toFixed(1));
+
+      const THUMB_AXES = [{ show: false }, { show: false }];
+      const THUMB_BASE = {
+        legend: false,
+        tooltip: false,
+        cursor: { show: false },
+        axes: THUMB_AXES,
+        padding: [16, 16, 16, 16],
+      };
+      const NO_POINTS = { points: { show: false } };
+      const spline = uPlot.paths.spline();
+      const SMOOTH = { paths: spline, ...NO_POINTS };
+
+      createLineChart(document.getElementById('c-line'), {
+        data: [timestamps, cpuSeriesA, cpuSeriesB, cpuSeriesC],
+        series: [{ ...NO_POINTS }, { ...NO_POINTS }, { ...NO_POINTS }],
+        ...THUMB_BASE,
+      });
+
+      createAreaChart(document.getElementById('c-area'), {
+        data: [timestamps, cpuSeriesA, cpuSeriesB, cpuSeriesC],
+        series: [{ ...SMOOTH }, { ...SMOOTH }, { ...SMOOTH, color: '#ff7eb6' }],
+        ...THUMB_BASE,
+      });
+
+      createBarChart(document.getElementById('c-bar'), {
+        data: [dailyTimestamps, dailyRequests],
+        series: [{}],
+        ...THUMB_BASE,
+      });
+
+      createScatterChart(document.getElementById('c-scatter'), {
+        data: [denseX, denseY1, denseY2, denseY3],
+        series: [{}, {}, {}],
+        ...THUMB_BASE,
+      });
+
+      createGauge(document.getElementById('c-gauge'), {
+        value: 72,
+        ticks: false,
+        color: '#8a3ffc',
+      });
+
+      document.querySelectorAll('button[data-target]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const wrap = document.getElementById(btn.dataset.target);
+          const canvas = wrap.querySelector('canvas');
+          const svg = wrap.querySelector('svg');
+
+          if (canvas) {
+            const link = document.createElement('a');
+            link.download = btn.dataset.name;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            return;
+          }
+
+          if (svg) {
+            const serialized = new XMLSerializer().serializeToString(svg);
+            const blob = new Blob([serialized], { type: 'image/svg+xml' });
+            const link = document.createElement('a');
+            link.download = btn.dataset.name.replace('.png', '.svg');
+            link.href = URL.createObjectURL(blob);
+            link.click();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
