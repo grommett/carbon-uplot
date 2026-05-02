@@ -9,7 +9,7 @@ import {
   createStat,
   createHeatmap,
   createBarGauge,
-} from '/dist/carbon-uplot.esm.js';
+} from '../dist/carbon-uplot.esm.js';
 import {
   timestamps,
   cpuSeriesA,
@@ -19,8 +19,8 @@ import {
   dailyRequests,
   heatmapData,
   BAR_GAUGE_CPU,
-} from '/demo/demo-data.js';
-import { seededRandomSeries } from '/demo/data-utils.js';
+} from './demo-data.js';
+import { seededRandomSeries } from './data-utils.js';
 
 document.querySelectorAll('.cu-overview__code code').forEach((code) => {
   const text = code.textContent.replace(/^\n/, '').trimEnd();
