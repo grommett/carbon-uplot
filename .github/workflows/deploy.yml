@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: '20'
       - run: npm ci
-      - run: npm run demo:build
+      - run: NODE_ENV=production npm run demo:build
       - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
