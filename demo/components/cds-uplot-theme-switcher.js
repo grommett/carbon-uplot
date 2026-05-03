@@ -23,13 +23,20 @@ function activeTheme() {
   return localStorage.getItem('cu-theme') || 'white';
 }
 
+function activeThemeLabel() {
+  const theme = activeTheme();
+  return THEME_OPTIONS.find((option) => option.value === theme)?.label ?? 'White';
+}
+
 class CDSuPlotThemeSwitcher extends HTMLElement {
   _open = false;
   _menu = null;
+  _triggerLabel = null;
 
   connectedCallback() {
     this.innerHTML = this.render();
     this._menu = this.querySelector('.cu-ts-menu');
+    this._triggerLabel = this.querySelector('.cu-ts-trigger-label');
     document.addEventListener('click', this);
     document.addEventListener('cu-theme-change', this);
   }
@@ -40,14 +47,15 @@ class CDSuPlotThemeSwitcher extends HTMLElement {
   }
 
   handleEvent(event) {
+    if (event.type === 'cu-theme-change') {
+      this._menu.innerHTML = this.renderOptions();
+      this._triggerLabel.textContent = activeThemeLabel();
+      return;
+    }
+
     const option = event.target.closest('.cu-ts-option');
     const isTrigger = event.target.closest('.cu-ts-trigger');
     const isOutside = !this.contains(event.target);
-
-    if (event.type === 'cu-theme-change') {
-      this._menu.innerHTML = this.renderOptions();
-      return;
-    }
 
     if (isOutside) return this.close();
     if (isTrigger) return this.handleTrigger();
@@ -84,7 +92,7 @@ class CDSuPlotThemeSwitcher extends HTMLElement {
     return `
       <button type="button" class="cu-ts-trigger">
         ${THEME_ICON}
-        Theme
+        <span class="cu-ts-trigger-label">${activeThemeLabel()}</span>
       </button>
       <div class="cu-ts-menu" hidden>
         ${this.renderOptions()}
