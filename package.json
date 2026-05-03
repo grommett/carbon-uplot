@@ -30,6 +30,14 @@
     "dataviz"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/grommett/carbon-uplot.git"
+  },
+  "homepage": "https://grommett.github.io/carbon-uplot",
+  "bugs": {
+    "url": "https://github.com/grommett/carbon-uplot/issues"
+  },
   "scripts": {
     "build": "npm run generate:themes && rollup -c",
     "generate:themes": "node scripts/generate-themes.js",
