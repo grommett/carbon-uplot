@@ -20,7 +20,9 @@ const CHECK_ICON = `
 </svg>`;
 
 function activeTheme() {
-  return localStorage.getItem('cu-theme') || 'white';
+  const saved = localStorage.getItem('cu-theme');
+  if (saved) return saved;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'g100' : 'white';
 }
 
 function activeThemeLabel() {
