@@ -1,6 +1,6 @@
 {
   "name": "carbon-uplot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "IBM Carbon design system chart components built on uPlot",
   "type": "module",
   "main": "dist/carbon-uplot.cjs.js",
