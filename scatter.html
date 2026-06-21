@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <script src="/carbon-uplot/demo/components/cds-uplot-restore-theme.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbon µPlot — Scatter</title>
+    <link rel="stylesheet" href="/carbon-uplot/assets/carbon.css">
+    <link rel="stylesheet" href="/carbon-uplot/demo/carbon-demo.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans:wght@300;400;500&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.min.css">
+  </head>
+  <body>
+    <header aria-label="Carbon µPlot" class="cds--header">
+  <a href="/carbon-uplot/" class="cds--header__name">
+    <span class="cds--header__name--prefix">Carbon</span>&nbsp;<span>µPlot</span>
+  </a>
+  <nav aria-label="Carbon µPlot" class="cds--header__nav">
+    <ul class="cds--header__menu-bar">
+      <li>
+        <a href="/carbon-uplot/line.html" class="cds--header__menu-item" tabindex="0"><span class="cds--text-truncate--end">Line</span></a>
+      </li>
+      <li>
+        <a href="/carbon-uplot/area.html" class="cds--header__menu-item" tabindex="0"><span class="cds--text-truncate--end">Area</span></a>
+      </li>
+      <li>
+        <a href="/carbon-uplot/scatter.html" class="cds--header__menu-item cds--header__menu-item--current" tabindex="0"><span class="cds--text-truncate--end">Scatter</span></a>
+      </li>
+      <li>
+        <a href="/carbon-uplot/bar.html" class="cds--header__menu-item" tabindex="0"><span class="cds--text-truncate--end">Bar</span></a>
+      </li>
+      <li>
+        <a href="/carbon-uplot/gauge.html" class="cds--header__menu-item" tabindex="0"><span class="cds--text-truncate--end">Gauge</span></a>
+      </li>
+      <li>
+        <a href="/carbon-uplot/stat.html" class="cds--header__menu-item" tabindex="0"><span class="cds--text-truncate--end">Stat</span></a>
+      </li>
+      <li>
+        <a href="/carbon-uplot/heatmap.html" class="cds--header__menu-item" tabindex="0"><span class="cds--text-truncate--end">Heatmap</span></a>
+      </li>
+      <li>
+        <a href="/carbon-uplot/bar-gauge.html" class="cds--header__menu-item" tabindex="0"><span class="cds--text-truncate--end">Bar Gauge</span></a>
+      </li>
+    </ul>
+  </nav>
+  <div class="cds--header__global">
+    <cds-uplot-theme-switcher></cds-uplot-theme-switcher>
+    <script type="module" src="/carbon-uplot/demo/components/cds-uplot-theme-switcher.js"></script>
+  </div>
+</header>
+
+    <main>
+<!-- Charts -->
+
+<div class="demo-grid" style="--demo-cols: 2">
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">CPU vs response time — single series</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-scatter-single">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="scatter-single"></div>
+  </div>
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">CPU vs response time — axis labels</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-scatter-labels">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="scatter-labels"></div>
+  </div>
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">CPU vs response time — multi-series</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-scatter-multi">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="scatter-multi"></div>
+  </div>
+  <div class="cds--tile">
+    <div class="cu-graph-header--flex">
+      <p class="cu-graph-header">CPU vs response time — custom colors, legend top</p>
+      <button type="button" class="cds--btn--tertiary demo-code-toggle" data-dialog="code-scatter-colors">
+        &lt;/&gt;
+      </button>
+    </div>
+    <div id="scatter-colors"></div>
+  </div>
+</div>
+
+<!-- Code dialogs -->
+
+<dialog id="code-scatter-single" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">CPU vs response time — single series</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true" width="20" height="20" viewBox="0 0 32 32">
+          <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createScatterChart } from 'carbon-uplot';
+
+createScatterChart(el, {
+  data: [scatterCpu, scatterLatency],
+  series: [{ label: 'prod-vsi-01' }],
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden="">
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-scatter-chart&gt;&lt;/cu-scatter-chart&gt;
+el.data = [scatterCpu, scatterLatency];
+el.series = [{ label: 'prod-vsi-01' }];
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden="">
+            <pre><code>
+import { ScatterChart } from 'carbon-uplot/react';
+
+&lt;ScatterChart
+  data={[scatterCpu, scatterLatency]}
+  series={[{ label: 'prod-vsi-01' }]}
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="code-scatter-labels" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">CPU vs response time — axis labels</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true" width="20" height="20" viewBox="0 0 32 32">
+          <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createScatterChart } from 'carbon-uplot';
+
+createScatterChart(el, {
+  data: [scatterCpu, scatterLatency],
+  series: [{ label: 'prod-vsi-01' }],
+  xLabel: 'CPU utilization (%)',
+  yLabel: 'Response time (ms)',
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden="">
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-scatter-chart x-label="CPU utilization (%)" y-label="Response time (ms)"&gt;&lt;/cu-scatter-chart&gt;
+el.data = [scatterCpu, scatterLatency];
+el.series = [{ label: 'prod-vsi-01' }];
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden="">
+            <pre><code>
+import { ScatterChart } from 'carbon-uplot/react';
+
+&lt;ScatterChart
+  data={[scatterCpu, scatterLatency]}
+  series={[{ label: 'prod-vsi-01' }]}
+  xLabel="CPU utilization (%)"
+  yLabel="Response time (ms)"
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="code-scatter-multi" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">CPU vs response time — multi-series</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true" width="20" height="20" viewBox="0 0 32 32">
+          <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createScatterChart } from 'carbon-uplot';
+
+createScatterChart(el, {
+  data: [scatterCpu, scatterLatency, scatterLatencyB, scatterLatencyC],
+  series: [
+    { label: 'web tier' },
+    { label: 'app tier' },
+    { label: 'db tier' },
+  ],
+  xLabel: 'CPU utilization (%)',
+  yLabel: 'Response time (ms)',
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden="">
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-scatter-chart x-label="CPU utilization (%)" y-label="Response time (ms)"&gt;&lt;/cu-scatter-chart&gt;
+el.data = [scatterCpu, scatterLatency, scatterLatencyB, scatterLatencyC];
+el.series = [
+  { label: 'web tier' },
+  { label: 'app tier' },
+  { label: 'db tier' },
+];
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden="">
+            <pre><code>
+import { ScatterChart } from 'carbon-uplot/react';
+
+&lt;ScatterChart
+  data={[scatterCpu, scatterLatency, scatterLatencyB, scatterLatencyC]}
+  series={[
+    { label: 'web tier' },
+    { label: 'app tier' },
+    { label: 'db tier' },
+  ]}
+  xLabel="CPU utilization (%)"
+  yLabel="Response time (ms)"
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="code-scatter-colors" class="demo-code-dialog">
+  <div class="demo--modal-container">
+    <div class="demo--modal-header">
+      <p class="demo--modal-header__heading">CPU vs response time — custom colors, legend top</p>
+      <button class="demo--modal-close" type="button" aria-label="Close">
+        <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true" width="20" height="20" viewBox="0 0 32 32">
+          <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"></path>
+        </svg>
+      </button>
+    </div>
+    <div class="demo--modal-content">
+      <div class="demo-code-panel">
+        <div class="demo-code-tabs" role="tablist" aria-label="Code example">
+          <button class="demo-code-tab" role="tab" aria-selected="true" data-tab="vanilla">Vanilla JS</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="ce">Custom Element</button>
+          <button class="demo-code-tab" role="tab" aria-selected="false" data-tab="react">React ≤18</button>
+        </div>
+        <div class="demo-code-panes">
+          <div class="demo-code-pane" data-pane="vanilla">
+            <pre><code>
+import { createScatterChart } from 'carbon-uplot';
+
+createScatterChart(el, {
+  data: [scatterCpu, scatterLatency, scatterLatencyB, scatterLatencyC],
+  series: [
+    { label: 'web tier', color: '#4589ff' },
+    { label: 'app tier', color: '#ff7eb6' },
+    { label: 'db tier', color: '#42be65' },
+  ],
+  xLabel: 'CPU utilization (%)',
+  yLabel: 'Response time (ms)',
+  legend: 'top',
+});
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="ce" hidden="">
+            <pre><code>
+import 'carbon-uplot/web-components';
+
+// &lt;cu-scatter-chart legend="top" x-label="CPU utilization (%)" y-label="Response time (ms)"&gt;&lt;/cu-scatter-chart&gt;
+el.data = [scatterCpu, scatterLatency, scatterLatencyB, scatterLatencyC];
+el.series = [
+  { label: 'web tier', color: '#4589ff' },
+  { label: 'app tier', color: '#ff7eb6' },
+  { label: 'db tier', color: '#42be65' },
+];
+</code></pre>
+          </div>
+          <div class="demo-code-pane" data-pane="react" hidden="">
+            <pre><code>
+import { ScatterChart } from 'carbon-uplot/react';
+
+&lt;ScatterChart
+  data={[scatterCpu, scatterLatency, scatterLatencyB, scatterLatencyC]}
+  series={[
+    { label: 'web tier', color: '#4589ff' },
+    { label: 'app tier', color: '#ff7eb6' },
+    { label: 'db tier', color: '#42be65' },
+  ]}
+  xLabel="CPU utilization (%)"
+  yLabel="Response time (ms)"
+  legend="top"
+/&gt;
+</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+</main>
+    <script type="importmap">
+      {
+        "imports": {
+          "uplot": "https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.esm.js"
+        }
+      }
+    </script>
+    <script type="module" src="/carbon-uplot/demo/scatter.demo.js"></script>
+    <script type="module" src="/carbon-uplot/demo/components/demo-code-tabs.js"></script>
+  </body>
+</html>
